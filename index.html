@@ -190,6 +190,9 @@
                 <button id="btnTiktokWC" class="toggle-button">tiktokWC</button>
                 <button id="btnShopee" class="toggle-button">shopee</button>
                 <button id="btnFreeFireWC" class="toggle-button">FreeFireWC</button>
+                <!-- Tombol baru SupportzoomWC -->
+                <button id="btnSupportzoomWC" class="toggle-button">SupportzoomWC</button>
+                
                 <button id="btnConvert" class="toggle-button">Tanpa bug</button>
                 <button id="btnAllBugs" class="toggle-button col-span-3 md:col-span-4">All Bug</button>
             </div>
@@ -280,6 +283,8 @@
             'btnTiktokWC': { suffix: '_tiktokwc', rule: { newServer: 'api24-normal.tiktokv.com', prefixSniHost: 'api24-normal.tiktokv.com.' } },
             'btnShopee':   { suffix: '_shopee',   rule: { newServer: 'cvs-deo.shopeemobile.com' } },
             'btnFreeFireWC': { suffix: '_FreeFireWC', rule: { newServer: 'dl.cvs.freefiremobile.com', prefixSniHost: 'dl.cvs.freefiremobile.com.' } },
+            // Aturan Baru SupportzoomWC
+            'btnSupportzoomWC': { suffix: '_SupportzoomWC', rule: { newServer: 'support.zoom.us', prefixSniHost: 'support.zoom.us.' } },
             'btnConvert':  { suffix: '',          rule: {} } 
         };
 
@@ -294,6 +299,8 @@
             'btnTiktokWC': { on: ['bg-pink-600', 'text-white', 'active'], off: ['bg-white', 'text-pink-600', 'border-pink-500'] },
             'btnShopee':   { on: ['bg-orange-500', 'text-white', 'active'], off: ['bg-white', 'text-orange-600', 'border-orange-500'] },
             'btnFreeFireWC': { on: ['bg-cyan-500', 'text-white', 'active'], off: ['bg-white', 'text-cyan-600', 'border-cyan-500'] },
+            // Style untuk tombol SupportzoomWC
+            'btnSupportzoomWC': { on: ['bg-blue-500', 'text-white', 'active'], off: ['bg-white', 'text-blue-500', 'border-blue-500'] },
             'btnConvert':  { on: ['bg-gray-200', 'text-black', 'active'], off: ['bg-white', 'text-gray-500', 'border-gray-400'] },
             'btnAllBugs':  { on: ['all-bugs-on', 'active'], off: ['all-bugs-off'] }
         };
@@ -309,6 +316,8 @@
             'btnTiktokWC': { border: '#db2777', bg: '#fce7f3' },
             'btnShopee':   { border: '#f97316', bg: '#fff7ed' },
             'btnFreeFireWC': { border: '#06b6d4', bg: '#cffafe' },
+            // Output Style untuk SupportzoomWC
+            'btnSupportzoomWC': { border: '#3b82f6', bg: '#eff6ff' },
             'btnConvert':  { border: '#3b82f6', bg: '#dbeafe' },
             'btnAllBugs':  { border: '#f59e0b', bg: '#fef3c7' }
         };
@@ -360,7 +369,8 @@
         }
 
         function sanitizeFilename(name) {
-            const baseName = (name || 'config').replace(/_(ProsChamp|whatsappSNI|avawc|fb|spotify|netflix|vidibeat|tiktokwc|shopee|FreeFireWC)$/, ''); 
+            // Update regex to include SupportzoomWC
+            const baseName = (name || 'config').replace(/_(ProsChamp|whatsappSNI|avawc|fb|spotify|netflix|vidibeat|tiktokwc|shopee|FreeFireWC|SupportzoomWC)$/, ''); 
             return baseName.replace(/[<>:"/\\|?*\s]+/g, '_').replace(/[^a-zA-Z0-9_.-]/g, '').substring(0, 50) || 'config';
         }
 
