@@ -429,6 +429,153 @@
             text-transform: uppercase;
         }
 
+        /* ============================
+           LIGHT THEME (Auto-detect)
+           ============================ */
+        @media (prefers-color-scheme: light) {
+            :root {
+                --bg-primary: #faf5f5;
+                --bg-secondary: #fff0f0;
+                --accent-rose: #be123c;
+                --accent-red: #b91c1c;
+                --accent-crimson: #9f1239;
+                --accent-dark-red: #881337;
+                --accent-warm: #e11d48;
+                --accent-gold: #d97706;
+                --text-primary: #1c1017;
+                --text-secondary: #6b5e5f;
+                --glass-bg: rgba(255, 255, 255, 0.72);
+                --glass-border: rgba(0, 0, 0, 0.07);
+            }
+
+            body {
+                background-color: #faf5f5;
+            }
+
+            .glow-orb-1 {
+                background: radial-gradient(circle, rgba(225, 29, 72, 0.07) 0%, rgba(225, 29, 72, 0) 70%);
+            }
+
+            .glow-orb-2 {
+                background: radial-gradient(circle, rgba(190, 18, 60, 0.06) 0%, rgba(190, 18, 60, 0) 70%);
+            }
+
+            .glow-orb-3 {
+                background: radial-gradient(circle, rgba(244, 63, 94, 0.05) 0%, rgba(244, 63, 94, 0) 70%);
+            }
+
+            .main-card {
+                background: var(--glass-bg);
+                border: 1px solid var(--glass-border);
+                box-shadow:
+                    0 25px 60px -12px rgba(0, 0, 0, 0.08),
+                    0 0 80px -20px rgba(225, 29, 72, 0.05),
+                    inset 0 1px 0 rgba(255, 255, 255, 0.8);
+            }
+
+            .main-card:hover {
+                box-shadow:
+                    0 25px 60px -12px rgba(0, 0, 0, 0.1),
+                    0 0 100px -20px rgba(225, 29, 72, 0.08),
+                    inset 0 1px 0 rgba(255, 255, 255, 0.8);
+            }
+
+            .main-card::before {
+                opacity: 1;
+            }
+
+            .brand-logo {
+                background: linear-gradient(135deg, rgba(225, 29, 72, 0.1) 0%, rgba(190, 18, 60, 0.12) 100%);
+                border-color: rgba(225, 29, 72, 0.15);
+                box-shadow:
+                    0 8px 24px rgba(225, 29, 72, 0.08),
+                    0 0 30px rgba(225, 29, 72, 0.04);
+            }
+
+            .main-card:hover .brand-logo {
+                box-shadow:
+                    0 8px 24px rgba(225, 29, 72, 0.12),
+                    0 0 40px rgba(225, 29, 72, 0.06);
+            }
+
+            h1 {
+                background: linear-gradient(135deg, #1c1017 20%, #9f1239 60%, #be123c 100%);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+            }
+
+            .subtitle strong {
+                color: #9f1239;
+            }
+
+            .feature-item {
+                background: rgba(255, 255, 255, 0.5);
+                border: 1px solid rgba(0, 0, 0, 0.06);
+            }
+
+            .feature-item::after {
+                background: radial-gradient(circle at 50% 0%, rgba(225, 29, 72, 0.06) 0%, transparent 60%);
+            }
+
+            .feature-item:hover {
+                background: rgba(255, 255, 255, 0.8);
+                border-color: rgba(225, 29, 72, 0.2);
+                box-shadow: 0 12px 30px -8px rgba(225, 29, 72, 0.1);
+            }
+
+            .feature-item:nth-child(1) .feature-icon {
+                background: rgba(244, 63, 94, 0.1);
+            }
+            .feature-item:nth-child(2) .feature-icon {
+                background: rgba(225, 29, 72, 0.1);
+            }
+            .feature-item:nth-child(3) .feature-icon {
+                background: rgba(217, 119, 6, 0.1);
+            }
+
+            .cta-btn {
+                box-shadow:
+                    0 10px 30px -5px rgba(190, 18, 60, 0.25),
+                    0 4px 6px -2px rgba(190, 18, 60, 0.15),
+                    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            }
+
+            .cta-btn:hover {
+                box-shadow:
+                    0 16px 40px -5px rgba(190, 18, 60, 0.35),
+                    0 8px 15px -4px rgba(190, 18, 60, 0.2),
+                    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            }
+
+            .telegram-section {
+                background: rgba(255, 255, 255, 0.5);
+                border: 1px solid rgba(0, 0, 0, 0.06);
+            }
+
+            .telegram-section:hover {
+                background: rgba(255, 255, 255, 0.8);
+                border-color: rgba(14, 165, 233, 0.25);
+                box-shadow: 0 8px 24px -8px rgba(14, 165, 233, 0.12);
+            }
+
+            .telegram-icon {
+                background: rgba(14, 165, 233, 0.1);
+                color: #0284c7;
+            }
+
+            .telegram-info .tg-link {
+                color: #0369a1;
+            }
+
+            .telegram-info .tg-link:hover {
+                color: #0284c7;
+            }
+
+            .footer {
+                color: rgba(0, 0, 0, 0.25);
+            }
+        }
+
         /* Responsive */
         @media (max-width: 768px) {
             .features-grid {
@@ -523,6 +670,21 @@
     <script src="https://cdn.jsdelivr.net/npm/tsparticles-engine@2/tsparticles.engine.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/tsparticles-slim@2/tsparticles.slim.bundle.min.js"></script>
     <script>
+        // Detect system theme
+        const isLightMode = window.matchMedia('(prefers-color-scheme: light)').matches;
+
+        const particleColors = isLightMode
+            ? ["#be123c", "#e11d48", "#f43f5e", "#fb7185", "#d97706"]
+            : ["#e11d48", "#dc2626", "#7f1d1d", "#f43f5e", "#991b1b"];
+
+        const linkColor = isLightMode ? "#e11d48" : "#e11d48";
+        const linkOpacity = isLightMode ? 0.08 : 0.06;
+        const particleOpacity = isLightMode
+            ? { min: 0.15, max: 0.45 }
+            : { min: 0.1, max: 0.35 };
+        const grabLinkColor = isLightMode ? "#be123c" : "#f43f5e";
+        const grabLinkOpacity = isLightMode ? 0.2 : 0.15;
+
         tsParticles.load("tsparticles", {
             fullScreen: { enable: false },
             fpsLimit: 60,
@@ -535,13 +697,13 @@
                     }
                 },
                 color: {
-                    value: ["#e11d48", "#dc2626", "#7f1d1d", "#f43f5e", "#991b1b"]
+                    value: particleColors
                 },
                 shape: {
                     type: "circle"
                 },
                 opacity: {
-                    value: { min: 0.1, max: 0.35 },
+                    value: particleOpacity,
                     animation: {
                         enable: true,
                         speed: 0.8,
@@ -561,8 +723,8 @@
                 links: {
                     enable: true,
                     distance: 140,
-                    color: "#e11d48",
-                    opacity: 0.06,
+                    color: linkColor,
+                    opacity: linkOpacity,
                     width: 1
                 },
                 move: {
@@ -598,8 +760,8 @@
                     grab: {
                         distance: 160,
                         links: {
-                            opacity: 0.15,
-                            color: "#f43f5e"
+                            opacity: grabLinkOpacity,
+                            color: grabLinkColor
                         }
                     },
                     push: {
