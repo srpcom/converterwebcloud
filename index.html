@@ -499,6 +499,86 @@
             font-weight: 600;
         }
 
+        /* Floating Admin Button */
+        .floating-admin {
+            position: fixed;
+            bottom: 28px;
+            right: 28px;
+            z-index: 999;
+            display: flex;
+            align-items: center;
+            gap: 0;
+            text-decoration: none;
+        }
+
+        .floating-admin-btn {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            box-shadow:
+                0 6px 20px -4px rgba(14, 165, 233, 0.5),
+                0 2px 8px rgba(0, 0, 0, 0.2);
+            transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+        }
+
+        .floating-admin-btn::before {
+            content: '';
+            position: absolute;
+            inset: -4px;
+            border-radius: 50%;
+            background: rgba(14, 165, 233, 0.25);
+            animation: floatingPulse 2s ease-in-out infinite;
+            z-index: -1;
+        }
+
+        @keyframes floatingPulse {
+            0%, 100% { transform: scale(1); opacity: 0.4; }
+            50% { transform: scale(1.25); opacity: 0; }
+        }
+
+        .floating-admin:hover .floating-admin-btn {
+            transform: scale(1.1);
+            box-shadow:
+                0 8px 28px -4px rgba(14, 165, 233, 0.6),
+                0 4px 12px rgba(0, 0, 0, 0.25);
+        }
+
+        .floating-admin-tooltip {
+            background: rgba(15, 23, 42, 0.92);
+            backdrop-filter: blur(8px);
+            color: #e0f2fe;
+            font-size: 0.78rem;
+            font-weight: 600;
+            padding: 8px 14px;
+            border-radius: 10px;
+            white-space: nowrap;
+            margin-right: 12px;
+            opacity: 0;
+            transform: translateX(8px);
+            transition: all 0.3s ease;
+            pointer-events: none;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .floating-admin-tooltip span {
+            display: block;
+            font-size: 0.65rem;
+            color: #7dd3fc;
+            font-weight: 500;
+            margin-top: 2px;
+        }
+
+        .floating-admin:hover .floating-admin-tooltip {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
         /* Footer */
         .footer {
             margin-top: 40px;
@@ -654,6 +734,16 @@
                 color: rgba(0, 0, 0, 0.25);
             }
 
+            .floating-admin-tooltip {
+                background: rgba(255, 255, 255, 0.92);
+                color: #1e293b;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            }
+
+            .floating-admin-tooltip span {
+                color: #0369a1;
+            }
+
             .clock-digit {
                 background: linear-gradient(180deg, rgba(0,0,0,0.04) 0%, rgba(0,0,0,0.01) 100%);
                 border: 1px solid rgba(0, 0, 0, 0.08);
@@ -784,22 +874,23 @@
                     <a href="https://t.me/srpcomchannel" target="_blank" rel="noopener noreferrer" class="tg-link" id="telegram-link">@srpcomchannel</a>
                 </div>
             </div>
-
-            <div class="telegram-section" id="telegram-admin" style="margin-top: 12px;">
-                <div class="telegram-icon">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-                </div>
-                <div class="telegram-info">
-                    <div class="tg-label">Hubungi Admin</div>
-                    <a href="https://t.me/srpcomadmin" target="_blank" rel="noopener noreferrer" class="tg-link" id="admin-link">@srpcomadmin</a>
-                </div>
-            </div>
         </main>
 
         <footer class="footer">
             &copy; 2026 Tuban Store. All rights reserved.
         </footer>
     </div>
+
+    <!-- Floating Admin Button -->
+    <a href="https://t.me/srpcomadmin" target="_blank" rel="noopener noreferrer" class="floating-admin" id="floating-admin-btn">
+        <div class="floating-admin-tooltip">
+            Hubungi Admin
+            <span>@srpcomadmin</span>
+        </div>
+        <div class="floating-admin-btn">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
+        </div>
+    </a>
 
     <!-- tsParticles v2 CDN -->
     <script src="https://cdn.jsdelivr.net/npm/tsparticles-engine@2/tsparticles.engine.min.js"></script>
