@@ -45,8 +45,8 @@
             position: relative;
         }
 
-        /* tsParticles container */
-        #tsparticles {
+        /* Neural Canvas Container */
+        #neural-canvas {
             position: fixed;
             top: 0;
             left: 0;
@@ -870,8 +870,8 @@
         </button>
     </div>
 
-    <!-- tsParticles Container -->
-    <div id="tsparticles"></div>
+    <!-- Custom Interactive Neural Canvas -->
+    <canvas id="neural-canvas"></canvas>
 
     <div class="glow-orb-1"></div>
     <div class="glow-orb-2"></div>
@@ -968,119 +968,237 @@
         </div>
     </a>
 
-    <!-- tsParticles v2 CDN -->
-    <script src="https://cdn.jsdelivr.net/npm/tsparticles-engine@2/tsparticles.engine.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/tsparticles-slim@2/tsparticles.slim.bundle.min.js"></script>
+    <!-- Custom Interactive Neural Constellation Script -->
     <script>
-        let particlesInstance = null;
+        const canvas = document.getElementById('neural-canvas');
+        const ctx = canvas.getContext('2d');
 
-        function initParticles(isLight) {
-            const particleColors = isLight
-                ? ["#be123c", "#e11d48", "#f43f5e", "#fb7185", "#d97706"]
-                : ["#e11d48", "#dc2626", "#7f1d1d", "#f43f5e", "#991b1b"];
+        let width = canvas.width = window.innerWidth;
+        let height = canvas.height = window.innerHeight;
 
-            const linkColor = "#e11d48";
-            const linkOpacity = isLight ? 0.08 : 0.06;
-            const particleOpacity = isLight
-                ? { min: 0.15, max: 0.45 }
-                : { min: 0.1, max: 0.35 };
-            const grabLinkColor = isLight ? "#be123c" : "#f43f5e";
-            const grabLinkOpacity = isLight ? 0.2 : 0.15;
+        window.addEventListener('resize', () => {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+            initNodes();
+        });
 
-            // Destroy existing particles if loaded
-            if (tsParticles.dom().length > 0) {
-                tsParticles.dom()[0].destroy();
+        const mouse = {
+            x: null,
+            y: null,
+            radius: 200, // Magnetic pull radius
+            active: false
+        };
+
+        window.addEventListener('mousemove', (e) => {
+            mouse.x = e.clientX;
+            mouse.y = e.clientY;
+            mouse.active = true;
+        });
+
+        window.addEventListener('mouseleave', () => {
+            mouse.x = null;
+            mouse.y = null;
+            mouse.active = false;
+        });
+
+        // Click Ripple Wave (Explosion Effect)
+        const ripples = [];
+        window.addEventListener('mousedown', (e) => {
+            // Ignore ripple triggers when interacting with UI buttons/cards
+            if (e.target.closest('button') || e.target.closest('a') || e.target.closest('.feature-item') || e.target.closest('.clock-wrapper')) {
+                return;
+            }
+            ripples.push({
+                x: e.clientX,
+                y: e.clientY,
+                radius: 0,
+                maxRadius: window.innerWidth > 768 ? 320 : 180,
+                speed: window.innerWidth > 768 ? 9 : 6,
+                force: 18
+            });
+        });
+
+        class Node {
+            constructor() {
+                this.reset(true);
             }
 
-            tsParticles.load("tsparticles", {
-                fullScreen: { enable: false },
-                fpsLimit: 60,
-                particles: {
-                    number: {
-                        value: 50,
-                        density: {
-                            enable: true,
-                            area: 900
-                        }
-                    },
-                    color: {
-                        value: particleColors
-                    },
-                    shape: {
-                        type: "circle"
-                    },
-                    opacity: {
-                        value: particleOpacity,
-                        animation: {
-                            enable: true,
-                            speed: 0.8,
-                            minimumValue: 0.05,
-                            sync: false
-                        }
-                    },
-                    size: {
-                        value: { min: 1, max: 3.5 },
-                        animation: {
-                            enable: true,
-                            speed: 1.5,
-                            minimumValue: 0.5,
-                            sync: false
-                        }
-                    },
-                    links: {
-                        enable: true,
-                        distance: 140,
-                        color: linkColor,
-                        opacity: linkOpacity,
-                        width: 1
-                    },
-                    move: {
-                        enable: true,
-                        speed: 0.6,
-                        direction: "none",
-                        random: true,
-                        straight: false,
-                        outModes: {
-                            default: "out"
-                        },
-                        attract: {
-                            enable: true,
-                            rotateX: 600,
-                            rotateY: 1200
+            reset(initial = false) {
+                this.x = Math.random() * width;
+                this.y = Math.random() * height;
+                this.vx = (Math.random() - 0.5) * 0.8;
+                this.vy = (Math.random() - 0.5) * 0.8;
+                this.baseSize = Math.random() * 3.5 + 2.5; // Bigger glow nodes (2.5px to 6px)
+                this.size = this.baseSize;
+                
+                // Track magnetic pull displacements for elastic return
+                this.dx = 0;
+                this.dy = 0;
+            }
+
+            update(isLight) {
+                // Regular float movement
+                this.x += this.vx;
+                this.y += this.vy;
+
+                // Bounce off boundaries
+                if (this.x < 0 || this.x > width) this.vx *= -1;
+                if (this.y < 0 || this.y > height) this.vy *= -1;
+
+                // 🧲 Magnetic attraction force
+                if (mouse.active && mouse.x !== null) {
+                    const diffX = mouse.x - this.x;
+                    const diffY = mouse.y - this.y;
+                    const dist = Math.hypot(diffX, diffY);
+
+                    if (dist < mouse.radius) {
+                        const factor = (mouse.radius - dist) / mouse.radius;
+                        const pullForce = factor * factor * 1.5; // Exponential magnetic pull
+                        const angle = Math.atan2(diffY, diffX);
+                        
+                        this.x += Math.cos(angle) * pullForce;
+                        this.y += Math.sin(angle) * pullForce;
+                        
+                        // Scale up the node and its glow when attracted
+                        this.size = this.baseSize + factor * 4.5;
+                    } else {
+                        // Slowly decay size back to base
+                        if (this.size > this.baseSize) this.size -= 0.15;
+                    }
+                } else {
+                    if (this.size > this.baseSize) this.size -= 0.15;
+                }
+
+                // 💥 Ripple Explosion Force
+                ripples.forEach(ripple => {
+                    const diffX = this.x - ripple.x;
+                    const diffY = this.y - ripple.y;
+                    const dist = Math.hypot(diffX, diffY);
+
+                    // Push nodes rapidly when they are within the wave-front
+                    if (dist < ripple.radius && dist > ripple.radius - 35) {
+                        const angle = Math.atan2(diffY, diffX);
+                        const pushStrength = ((ripple.maxRadius - ripple.radius) / ripple.maxRadius) * ripple.force;
+                        
+                        this.vx += Math.cos(angle) * pushStrength * 0.15;
+                        this.vy += Math.sin(angle) * pushStrength * 0.15;
+                        
+                        // Limit velocities so they don't fly off too crazily
+                        const speed = Math.hypot(this.vx, this.vy);
+                        if (speed > 8) {
+                            this.vx = (this.vx / speed) * 8;
+                            this.vy = (this.vy / speed) * 8;
                         }
                     }
-                },
-                interactivity: {
-                    detectsOn: "window",
-                    events: {
-                        onHover: {
-                            enable: true,
-                            mode: "grab"
-                        },
-                        onClick: {
-                            enable: true,
-                            mode: "push"
-                        },
-                        resize: true
-                    },
-                    modes: {
-                        grab: {
-                            distance: 160,
-                            links: {
-                                opacity: grabLinkOpacity,
-                                color: grabLinkColor
-                            }
-                        },
-                        push: {
-                            quantity: 3
-                        }
-                    }
-                },
-                detectRetina: true
-            });
+                });
+
+                // Apply simple friction/damping so they return to normal velocity organicly
+                this.vx += ( (this.vx > 0 ? 0.4 : -0.4) * (Math.random() - 0.5) * 0.05 );
+                const currentSpeed = Math.hypot(this.vx, this.vy);
+                if (currentSpeed > 0.8) {
+                    this.vx *= 0.96;
+                    this.vy *= 0.96;
+                }
+            }
+
+            draw(isLight) {
+                // Soft glowing aura around node
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size * 3.5, 0, Math.PI * 2);
+                
+                const themeColor = isLight ? '225, 29, 72' : '244, 63, 94'; // Accent Crimson / Rose
+                const glowGrad = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.size * 3.5);
+                glowGrad.addColorStop(0, `rgba(${themeColor}, 0.7)`);
+                glowGrad.addColorStop(0.2, `rgba(${themeColor}, 0.25)`);
+                glowGrad.addColorStop(1, `rgba(${themeColor}, 0)`);
+                
+                ctx.fillStyle = glowGrad;
+                ctx.fill();
+
+                // Core highly-visible bright point
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size * 0.35, 0, Math.PI * 2);
+                ctx.fillStyle = isLight ? `rgba(${themeColor}, 1)` : '#ffffff';
+                ctx.fill();
+            }
         }
 
-        // Theme Toggle Logic
+        const nodes = [];
+        const nodeCount = window.innerWidth > 768 ? 60 : 35;
+
+        function initNodes() {
+            nodes.length = 0;
+            for (let i = 0; i < nodeCount; i++) {
+                nodes.push(new Node());
+            }
+        }
+        initNodes();
+
+        function drawConnections(isLight) {
+            const connectDist = 135;
+            const themeColor = isLight ? '225, 29, 72' : '244, 63, 94';
+
+            for (let i = 0; i < nodes.length; i++) {
+                for (let j = i + 1; j < nodes.length; j++) {
+                    const dx = nodes[i].x - nodes[j].x;
+                    const dy = nodes[i].y - nodes[j].y;
+                    const dist = Math.hypot(dx, dy);
+
+                    if (dist < connectDist) {
+                        // Lines grow stronger as nodes get closer
+                        const opacity = (1 - dist / connectDist) * (isLight ? 0.16 : 0.09);
+                        ctx.beginPath();
+                        ctx.moveTo(nodes[i].x, nodes[i].y);
+                        ctx.lineTo(nodes[j].x, nodes[j].y);
+                        ctx.strokeStyle = `rgba(${themeColor}, ${opacity})`;
+                        ctx.lineWidth = (1 - dist / connectDist) * 1.1;
+                        ctx.stroke();
+                    }
+                }
+            }
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, width, height);
+            
+            const isLight = document.body.classList.contains('light-theme');
+
+            // Draw connection lines
+            drawConnections(isLight);
+
+            // Update & Draw ripple waves
+            for (let i = ripples.length - 1; i >= 0; i--) {
+                const r = ripples[i];
+                r.radius += r.speed;
+
+                ctx.beginPath();
+                ctx.arc(r.x, r.y, r.radius, 0, Math.PI * 2);
+                const opacity = (1 - r.radius / r.maxRadius) * 0.28;
+                
+                // Visual ripple wave
+                ctx.strokeStyle = isLight 
+                    ? `rgba(225, 29, 72, ${opacity})` 
+                    : `rgba(244, 63, 94, ${opacity})`;
+                ctx.lineWidth = 2.5;
+                ctx.stroke();
+
+                if (r.radius >= r.maxRadius) {
+                    ripples.splice(i, 1);
+                }
+            }
+
+            // Update & Draw nodes
+            nodes.forEach(node => {
+                node.update(isLight);
+                node.draw(isLight);
+            });
+
+            requestAnimationFrame(animate);
+        }
+
+        animate();
+
+        // Hook theme changes to recalculate colors instantly (handled seamlessly inside loop)
         const themeToggleBtn = document.getElementById('theme-toggle-btn');
         
         function getPreferredTheme() {
@@ -1095,11 +1213,9 @@
             if (theme === 'light') {
                 document.body.classList.add('light-theme');
                 themeToggleBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-sun"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>`;
-                initParticles(true);
             } else {
                 document.body.classList.remove('light-theme');
                 themeToggleBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-moon"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>`;
-                initParticles(false);
             }
         }
 
