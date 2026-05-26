@@ -420,6 +420,85 @@
             color: #38bdf8;
         }
 
+        /* Digital Clock */
+        .clock-wrapper {
+            margin-bottom: 36px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .clock-display {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .clock-digit-group {
+            display: flex;
+            align-items: center;
+            gap: 3px;
+        }
+
+        .clock-digit {
+            font-family: 'Outfit', sans-serif;
+            font-size: 2.6rem;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            background: linear-gradient(180deg, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0.03) 100%);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 12px;
+            padding: 8px 12px;
+            min-width: 52px;
+            text-align: center;
+            color: var(--text-primary);
+            line-height: 1;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .clock-digit::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: rgba(255, 255, 255, 0.04);
+        }
+
+        .clock-colon {
+            font-family: 'Outfit', sans-serif;
+            font-size: 2.4rem;
+            font-weight: 800;
+            color: var(--accent-rose);
+            line-height: 1;
+            padding: 0 2px;
+            animation: colonBlink 1s step-end infinite;
+        }
+
+        @keyframes colonBlink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.2; }
+        }
+
+        .clock-date {
+            font-size: 0.82rem;
+            color: var(--text-secondary);
+            letter-spacing: 0.04em;
+            font-weight: 500;
+        }
+
+        .clock-label {
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: var(--accent-rose);
+            opacity: 0.7;
+            font-weight: 600;
+        }
+
         /* Footer */
         .footer {
             margin-top: 40px;
@@ -574,6 +653,20 @@
             .footer {
                 color: rgba(0, 0, 0, 0.25);
             }
+
+            .clock-digit {
+                background: linear-gradient(180deg, rgba(0,0,0,0.04) 0%, rgba(0,0,0,0.01) 100%);
+                border: 1px solid rgba(0, 0, 0, 0.08);
+                color: var(--text-primary);
+            }
+
+            .clock-digit::after {
+                background: rgba(0, 0, 0, 0.04);
+            }
+
+            .clock-colon {
+                color: var(--accent-rose);
+            }
         }
 
         /* Responsive */
@@ -594,6 +687,17 @@
             .subtitle {
                 font-size: 0.95rem;
                 margin-bottom: 28px;
+            }
+
+            .clock-digit {
+                font-size: 1.8rem;
+                min-width: 38px;
+                padding: 6px 8px;
+                border-radius: 10px;
+            }
+
+            .clock-colon {
+                font-size: 1.6rem;
             }
         }
     </style>
@@ -618,6 +722,27 @@
             <p class="subtitle">
                 Silakan untuk melakukan <strong>convert xray</strong>, <strong>SSH to darktunnel</strong>, & membuat <strong>config .yaml</strong>, silakan login di portal resmi kami.
             </p>
+
+            <div class="clock-wrapper" id="digital-clock">
+                <div class="clock-label">Waktu Lokal</div>
+                <div class="clock-display">
+                    <div class="clock-digit-group">
+                        <span class="clock-digit" id="clock-h1">0</span>
+                        <span class="clock-digit" id="clock-h2">0</span>
+                    </div>
+                    <span class="clock-colon">:</span>
+                    <div class="clock-digit-group">
+                        <span class="clock-digit" id="clock-m1">0</span>
+                        <span class="clock-digit" id="clock-m2">0</span>
+                    </div>
+                    <span class="clock-colon">:</span>
+                    <div class="clock-digit-group">
+                        <span class="clock-digit" id="clock-s1">0</span>
+                        <span class="clock-digit" id="clock-s2">0</span>
+                    </div>
+                </div>
+                <div class="clock-date" id="clock-date"></div>
+            </div>
 
             <div class="features-grid">
                 <div class="feature-item">
@@ -771,6 +896,29 @@
             },
             detectRetina: true
         });
+    </script>
+
+    <!-- Digital Clock Script -->
+    <script>
+        function updateClock() {
+            const now = new Date();
+            const h = String(now.getHours()).padStart(2, '0');
+            const m = String(now.getMinutes()).padStart(2, '0');
+            const s = String(now.getSeconds()).padStart(2, '0');
+
+            document.getElementById('clock-h1').textContent = h[0];
+            document.getElementById('clock-h2').textContent = h[1];
+            document.getElementById('clock-m1').textContent = m[0];
+            document.getElementById('clock-m2').textContent = m[1];
+            document.getElementById('clock-s1').textContent = s[0];
+            document.getElementById('clock-s2').textContent = s[1];
+
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            document.getElementById('clock-date').textContent = now.toLocaleDateString('id-ID', options);
+        }
+
+        updateClock();
+        setInterval(updateClock, 1000);
     </script>
 
 </body>
