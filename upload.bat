@@ -59,7 +59,7 @@ if not defined has_name (
 for /f "tokens=*" %%a in ('git config user.email 2^>nul') do set "has_email=1"
 if not defined has_email (
     echo [INFO] Git user.email belum dikonfigurasi.
-    set /p "git_email=Masukkan Email Git Anda (contoh: email@example.com): "
+    set /p "git_email=Masukkan Email Git Anda (contoh: username@users.noreply.github.com): "
     if not "!git_email!"=="" (
         git config --global user.email "!git_email!"
         echo [OK] user.email berhasil diset.
@@ -95,7 +95,7 @@ echo [3/3] Running [git push]...
 git rev-parse --abbrev-ref @{upstream} >nul 2>&1
 if errorlevel 1 (
     echo [INFO] Push pertama kali, setting upstream branch...
-    git push -u origin main
+    git push -u origin main --force
 ) else (
     git push
 )
